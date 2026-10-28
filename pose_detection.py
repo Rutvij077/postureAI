@@ -63,7 +63,7 @@ while True:
             2
         )
 
-    cv2.imshow("PostureAI - Day 1", frame)
+    cv2.imshow("PostureAI", frame)
 
     # Press Q to quit
     if cv2.waitKey(1) & 0xFF == ord("q"):
