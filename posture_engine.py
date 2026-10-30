@@ -22,3 +22,68 @@ def calculate_angle(a, b, c):
     cosine = np.clip(cosine, -1.0, 1.0)
 
     return float(np.degrees(np.arccos(cosine)))
+
+def analyze_posture(landmarks, exercise, image_width, image_height):
+    from exercise_rules import EXERCISES
+
+    if exercise not in EXERCISES:
+        raise ValueError(f"Unsupported exercise: {exercise}")
+
+    ear = landmarks[7]
+    shoulder = landmarks[11]
+    hip = landmarks[23]
+
+    if min(
+        ear.visibility,
+        shoulder.visibility,
+        hip.visibility
+    ) < 0.5:
+        return {
+            "exercise": exercise,
+            "status": "landmarks_unreliable",
+            "message": "Adjust your position so your ear, shoulder and hip are visible."
+        }
+
+    ear_xy = (ear.x * image_width, ear.y * image_height)
+    shoulder_xy = (
+        shoulder.x * image_width,
+        shoulder.y * image_height
+    )
+    hip_xy = (hip.x * image_width, hip.y * image_height)
+
+    torso_length = np.linalg.norm(
+        np.array(shoulder_xy) - np.array(hip_xy)
+    )
+
+    if torso_length < 1e-6:
+        return {
+            "exercise": exercise,
+            "status": "invalid_measurement",
+            "message": "Unable to estimate torso alignment."
+        }
+
+    head_offset = (
+        ear_xy[0] - shoulder_xy[0]
+    ) / torso_length
+
+    vertical_reference = (
+        hip_xy[0],
+        hip_xy[1] - 100
+    )
+
+    torso_angle = calculate_angle(
+        vertical_reference,
+        hip_xy,
+        shoulder_xy
+    )
+
+    return {
+        "exercise": exercise,
+        "status": "measurements_available",
+        "head_offset": round(float(head_offset), 3),
+        "torso_angle_degrees": (
+            round(torso_angle, 1)
+            if torso_angle is not None
+            else None
+        )
+    }
