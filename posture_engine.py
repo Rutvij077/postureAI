@@ -30,10 +30,15 @@ def analyze_posture(landmarks, exercise, image_width, image_height):
     if exercise not in EXERCISES:
         raise ValueError(f"Unsupported exercise: {exercise}")
 
-    ear = landmarks[7]
-    shoulder = landmarks[11]
-    hip = landmarks[23]
-
+    if isinstance(landmarks[7], dict):
+        ear = type("Landmark", (), landmarks[7])()
+        shoulder = type("Landmark", (), landmarks[11])()
+        hip = type("Landmark", (), landmarks[23])()
+    else:
+        ear = landmarks[7]
+        shoulder = landmarks[11]
+        hip = landmarks[23]
+        
     if min(
         ear.visibility,
         shoulder.visibility,
