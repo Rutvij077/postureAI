@@ -88,3 +88,22 @@ def analyze_posture(landmarks, exercise, image_width, image_height):
             else None
         )
     }
+
+def analyze_exercise_posture(
+    landmarks,
+    exercise,
+    image_width,
+    image_height
+):
+    measurements = analyze_posture(
+        landmarks,
+        exercise,
+        image_width,
+        image_height
+    )
+
+    feedback = generate_feedback(measurements)
+
+    measurements["feedback"] = feedback
+
+    return measurements
