@@ -1,7 +1,9 @@
 import cv2
 import mediapipe as mp
 
-from posture_engine import analyze_exercise_posture
+from posture_engine import analyze_posture
+from feedback_rules import generate_feedback
+from measurement_smoothing import MeasurementSmoother
 
 # Initialize MediaPipe
 mp_pose = mp.solutions.pose
@@ -15,11 +17,11 @@ pose = mp_pose.Pose(
 )
 
 
-# Open webcam
 cap = cv2.VideoCapture(0)
 
-# Select exercise
 exercise = "squat"
+
+smoother = MeasurementSmoother(window_size=5)
 
 
 while cap.isOpened():
@@ -48,18 +50,24 @@ while cap.isOpened():
             mp_pose.POSE_CONNECTIONS
         )
 
-        # Analyze posture
-        result = analyze_exercise_posture(
+       # Calculate raw measurements
+        measurements = analyze_posture(
             results.pose_landmarks.landmark,
             exercise,
             width,
             height
         )
 
+        # Smooth measurements
+        measurements = smoother.smooth(measurements)
+
+        # Generate feedback
+        feedback = generate_feedback(measurements)
+
         # Display feedback
         y_position = 30
 
-        for message in result["feedback"]:
+        for message in feedback:
 
             cv2.putText(
                 frame,
