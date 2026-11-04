@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+from exercise_controls import get_next_exercise
 
 from posture_engine import analyze_posture
 from feedback_rules import generate_feedback
@@ -93,10 +94,30 @@ while cap.isOpened():
             2
         )
 
+    cv2.putText(
+        frame,
+        f"Exercise: {exercise}",
+        (10, height - 20),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.7,
+        (255, 255, 0),
+        2
+    )
+
     cv2.imshow("PostureAI - Live Analysis", frame)
 
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+    key = cv2.waitKey(1) & 0xFF
+
+    if key == ord("q"):
         break
+
+    elif key == ord("n"):
+
+        exercise = get_next_exercise(exercise)
+
+        smoother.reset()
+
+        print("Selected exercise:", exercise)
 
 
 # Release resources
