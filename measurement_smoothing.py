@@ -4,12 +4,20 @@ from collections import deque
 class MeasurementSmoother:
 
     def __init__(self, window_size=5):
+        self.window_size = window_size
+
         self.head_offsets = deque(maxlen=window_size)
         self.torso_angles = deque(maxlen=window_size)
 
+    def reset(self):
+        self.head_offsets.clear()
+        self.torso_angles.clear()
+
     def smooth(self, measurements):
 
+        # Reset history if measurements are unreliable
         if measurements["status"] != "measurements_available":
+            self.reset()
             return measurements
 
         self.head_offsets.append(measurements["head_offset"])
@@ -19,7 +27,9 @@ class MeasurementSmoother:
                 measurements["torso_angle_degrees"]
             )
 
-        smoothed_head = sum(self.head_offsets) / len(self.head_offsets)
+        smoothed_head = (
+            sum(self.head_offsets) / len(self.head_offsets)
+        )
 
         smoothed_torso = None
 
