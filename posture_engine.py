@@ -119,3 +119,15 @@ def calculate_elbow_angle(shoulder, elbow, wrist):
         elbow,
         wrist
     )
+
+def calculate_torso_inclination(shoulder, hip):
+    vertical_reference = (
+        hip[0],
+        hip[1] - 100
+    )
+
+    return calculate_angle(
+        vertical_reference,
+        hip,
+        shoulder
+    )
