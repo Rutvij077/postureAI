@@ -131,3 +131,16 @@ def calculate_torso_inclination(shoulder, hip):
         hip,
         shoulder
     )
+
+def calculate_head_offset(ear, shoulder, torso_length):
+
+    if torso_length < 1e-6:
+        return None
+
+    return (ear[0] - shoulder[0]) / torso_length
+
+def calculate_shoulder_asymmetry(left_shoulder, right_shoulder):
+
+    return abs(
+        left_shoulder[1] - right_shoulder[1]
+    )
