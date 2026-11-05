@@ -112,3 +112,10 @@ def analyze_exercise_posture(
     measurements["feedback"] = feedback
 
     return measurements
+
+def calculate_elbow_angle(shoulder, elbow, wrist):
+    return calculate_angle(
+        shoulder,
+        elbow,
+        wrist
+    )
