@@ -2,51 +2,172 @@ EXERCISES = {
     "squat": {
         "name": "Barbell Squat",
         "view": "side",
-        "checks": ["head_alignment", "torso_inclination"]
+        "measurements": [
+            "head_alignment",
+            "torso_inclination",
+            "hip_depth"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "knee",
+            "ankle"
+        ]
     },
+
     "deadlift": {
         "name": "Conventional Deadlift",
         "view": "side",
-        "checks": ["head_alignment", "torso_inclination"]
+        "measurements": [
+            "head_alignment",
+            "torso_inclination",
+            "hip_position"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "knee",
+            "ankle"
+        ]
     },
+
     "romanian_deadlift": {
         "name": "Romanian Deadlift",
         "view": "side",
-        "checks": ["head_alignment", "torso_inclination"]
+        "measurements": [
+            "head_alignment",
+            "torso_inclination",
+            "hip_hinge"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "knee",
+            "ankle"
+        ]
     },
+
     "bent_over_row": {
         "name": "Bent-Over Barbell Row",
         "view": "side",
-        "checks": ["head_alignment", "torso_inclination"]
+        "measurements": [
+            "head_alignment",
+            "torso_inclination"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "elbow",
+            "wrist"
+        ]
     },
+
     "bicep_curl": {
         "name": "Standing Bicep Curl",
         "view": "side",
-        "checks": ["head_alignment", "torso_alignment"]
+        "measurements": [
+            "head_alignment",
+            "torso_stability",
+            "elbow_angle"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "elbow",
+            "wrist"
+        ]
     },
+
     "lat_pulldown": {
         "name": "Lat Pulldown",
         "view": "front",
-        "checks": ["head_alignment", "torso_alignment"]
+        "measurements": [
+            "head_alignment",
+            "shoulder_symmetry",
+            "torso_alignment"
+        ],
+        "landmarks": [
+            "nose",
+            "left_shoulder",
+            "right_shoulder",
+            "left_hip",
+            "right_hip"
+        ]
     },
+
     "push_up": {
         "name": "Push-up",
         "view": "side",
-        "checks": ["head_alignment", "body_alignment"]
+        "measurements": [
+            "head_alignment",
+            "body_alignment",
+            "elbow_angle"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "elbow",
+            "wrist",
+            "ankle"
+        ]
     },
+
     "plank": {
         "name": "Forearm Plank",
         "view": "side",
-        "checks": ["head_alignment", "body_alignment"]
+        "measurements": [
+            "head_alignment",
+            "body_alignment",
+            "hip_alignment"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "knee",
+            "ankle"
+        ]
     },
+
     "shoulder_press": {
         "name": "Standing Overhead Shoulder Press",
         "view": "front",
-        "checks": ["head_alignment", "torso_alignment"]
+        "measurements": [
+            "head_alignment",
+            "shoulder_symmetry",
+            "arm_alignment"
+        ],
+        "landmarks": [
+            "nose",
+            "left_shoulder",
+            "right_shoulder",
+            "left_elbow",
+            "right_elbow",
+            "left_wrist",
+            "right_wrist"
+        ]
     },
+
     "forward_lunge": {
         "name": "Forward Lunge",
         "view": "side",
-        "checks": ["head_alignment", "torso_alignment"]
+        "measurements": [
+            "head_alignment",
+            "torso_inclination",
+            "knee_alignment"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "knee",
+            "ankle"
+        ]
     }
 }
