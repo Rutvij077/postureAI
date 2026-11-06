@@ -38,6 +38,100 @@ def extract_landmarks(landmarks, image_width, image_height):
 
     return points
 
+def analyze_exercise_measurements(
+    landmarks,
+    exercise,
+    image_width,
+    image_height
+):
+
+    from exercise_rules import EXERCISES
+
+    if exercise not in EXERCISES:
+        raise ValueError(f"Unsupported exercise: {exercise}")
+
+    config = EXERCISES[exercise]
+
+    points = extract_landmarks(
+        landmarks,
+        image_width,
+        image_height
+    )
+
+    measurements = {}
+
+    # Head alignment
+    if "head_alignment" in config["measurements"]:
+
+        ear = points["left_ear"]
+        shoulder = points["left_shoulder"]
+        hip = points["left_hip"]
+
+        if ear and shoulder and hip:
+
+            torso_length = np.linalg.norm(
+                np.array(shoulder) - np.array(hip)
+            )
+
+            measurements["head_offset"] = calculate_head_offset(
+                ear,
+                shoulder,
+                torso_length
+            )
+
+        else:
+            measurements["head_offset"] = None
+
+    # Torso inclination
+    if "torso_inclination" in config["measurements"]:
+
+        shoulder = points["left_shoulder"]
+        hip = points["left_hip"]
+
+        if shoulder and hip:
+            measurements["torso_angle_degrees"] = (
+                calculate_torso_inclination(shoulder, hip)
+            )
+        else:
+            measurements["torso_angle_degrees"] = None
+
+    # Elbow angle
+    if "elbow_angle" in config["measurements"]:
+
+        shoulder = points["left_shoulder"]
+        elbow = points["left_elbow"]
+        wrist = points["left_wrist"]
+
+        if shoulder and elbow and wrist:
+            measurements["elbow_angle_degrees"] = (
+                calculate_elbow_angle(
+                    shoulder,
+                    elbow,
+                    wrist
+                )
+            )
+        else:
+            measurements["elbow_angle_degrees"] = None
+
+    # Shoulder asymmetry
+    if "shoulder_symmetry" in config["measurements"]:
+
+        left = points["left_shoulder"]
+        right = points["right_shoulder"]
+
+        if left and right:
+            measurements["shoulder_asymmetry_pixels"] = (
+                calculate_shoulder_asymmetry(left, right)
+            )
+        else:
+            measurements["shoulder_asymmetry_pixels"] = None
+
+    return {
+        "exercise": exercise,
+        "status": "measurements_available",
+        "measurements": measurements
+    }
+
 def calculate_angle(a, b, c):
     """Calculate angle ABC in degrees."""
 
