@@ -1,6 +1,42 @@
 import numpy as np
 from feedback_rules import generate_feedback
 
+LANDMARK_INDEX = {
+    "nose": 0,
+    "left_ear": 7,
+    "right_ear": 8,
+    "left_shoulder": 11,
+    "right_shoulder": 12,
+    "left_elbow": 13,
+    "right_elbow": 14,
+    "left_wrist": 15,
+    "right_wrist": 16,
+    "left_hip": 23,
+    "right_hip": 24,
+    "left_knee": 25,
+    "right_knee": 26,
+    "left_ankle": 27,
+    "right_ankle": 28
+}
+
+def extract_landmarks(landmarks, image_width, image_height):
+
+    points = {}
+
+    for name, index in LANDMARK_INDEX.items():
+
+        landmark = landmarks[index]
+
+        if landmark.visibility < 0.5:
+            points[name] = None
+            continue
+
+        points[name] = (
+            landmark.x * image_width,
+            landmark.y * image_height
+        )
+
+    return points
 
 def calculate_angle(a, b, c):
     """Calculate angle ABC in degrees."""
