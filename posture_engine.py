@@ -141,12 +141,62 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("shoulder_symmetry")
 
+        # Body alignment
+    if "body_alignment" in config["measurements"]:
+
+        shoulder = points["left_shoulder"]
+        hip = points["left_hip"]
+        ankle = points["left_ankle"]
+
+        if (
+            shoulder is not None
+            and hip is not None
+            and ankle is not None
+        ):
+
+            measurements["body_alignment_degrees"] = (
+                calculate_body_alignment(
+                    shoulder,
+                    hip,
+                    ankle
+                )
+            )
+
+        else:
+            missing_measurements.append("body_alignment")
+
+    # Hip alignment
+    if "hip_alignment" in config["measurements"]:
+
+        shoulder = points["left_shoulder"]
+        hip = points["left_hip"]
+        ankle = points["left_ankle"]
+
+        if (
+            shoulder is not None
+            and hip is not None
+            and ankle is not None
+        ):
+
+            measurements["hip_deviation_pixels"] = (
+                calculate_hip_deviation(
+                    shoulder,
+                    hip,
+                    ankle
+                )
+            )
+
+        else:
+            missing_measurements.append("hip_alignment")
+
     # Identify measurements not implemented yet
-    implemented = {
+        implemented = {
         "head_alignment",
         "torso_inclination",
         "elbow_angle",
-        "shoulder_symmetry"
+        "shoulder_symmetry",
+        "body_alignment",
+        "hip_alignment"
     }
 
     for measurement in config["measurements"]:
