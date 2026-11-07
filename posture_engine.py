@@ -59,6 +59,8 @@ def analyze_exercise_measurements(
     )
 
     measurements = {}
+    missing_measurements = []
+    unsupported_measurements = []
 
     # Head alignment
     if "head_alignment" in config["measurements"]:
@@ -67,7 +69,7 @@ def analyze_exercise_measurements(
         shoulder = points["left_shoulder"]
         hip = points["left_hip"]
 
-        if ear and shoulder and hip:
+        if ear is not None and shoulder is not None and hip is not None:
 
             torso_length = np.linalg.norm(
                 np.array(shoulder) - np.array(hip)
@@ -79,8 +81,11 @@ def analyze_exercise_measurements(
                 torso_length
             )
 
+            if measurements["head_offset"] is None:
+                missing_measurements.append("head_alignment")
+
         else:
-            measurements["head_offset"] = None
+            missing_measurements.append("head_alignment")
 
     # Torso inclination
     if "torso_inclination" in config["measurements"]:
@@ -88,12 +93,14 @@ def analyze_exercise_measurements(
         shoulder = points["left_shoulder"]
         hip = points["left_hip"]
 
-        if shoulder and hip:
+        if shoulder is not None and hip is not None:
+
             measurements["torso_angle_degrees"] = (
                 calculate_torso_inclination(shoulder, hip)
             )
+
         else:
-            measurements["torso_angle_degrees"] = None
+            missing_measurements.append("torso_inclination")
 
     # Elbow angle
     if "elbow_angle" in config["measurements"]:
@@ -102,7 +109,12 @@ def analyze_exercise_measurements(
         elbow = points["left_elbow"]
         wrist = points["left_wrist"]
 
-        if shoulder and elbow and wrist:
+        if (
+            shoulder is not None
+            and elbow is not None
+            and wrist is not None
+        ):
+
             measurements["elbow_angle_degrees"] = (
                 calculate_elbow_angle(
                     shoulder,
@@ -110,26 +122,52 @@ def analyze_exercise_measurements(
                     wrist
                 )
             )
-        else:
-            measurements["elbow_angle_degrees"] = None
 
-    # Shoulder asymmetry
+        else:
+            missing_measurements.append("elbow_angle")
+
+    # Shoulder symmetry
     if "shoulder_symmetry" in config["measurements"]:
 
         left = points["left_shoulder"]
         right = points["right_shoulder"]
 
-        if left and right:
+        if left is not None and right is not None:
+
             measurements["shoulder_asymmetry_pixels"] = (
                 calculate_shoulder_asymmetry(left, right)
             )
+
         else:
-            measurements["shoulder_asymmetry_pixels"] = None
+            missing_measurements.append("shoulder_symmetry")
+
+    # Identify measurements not implemented yet
+    implemented = {
+        "head_alignment",
+        "torso_inclination",
+        "elbow_angle",
+        "shoulder_symmetry"
+    }
+
+    for measurement in config["measurements"]:
+
+        if measurement not in implemented:
+            unsupported_measurements.append(measurement)
+
+    # Determine analysis status
+    if missing_measurements or unsupported_measurements:
+        status = "partial"
+    elif measurements:
+        status = "measurements_available"
+    else:
+        status = "no_measurements_available"
 
     return {
         "exercise": exercise,
-        "status": "measurements_available",
-        "measurements": measurements
+        "status": status,
+        "measurements": measurements,
+        "missing_measurements": missing_measurements,
+        "unsupported_measurements": unsupported_measurements
     }
 
 def calculate_angle(a, b, c):
