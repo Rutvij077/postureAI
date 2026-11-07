@@ -312,3 +312,10 @@ def calculate_shoulder_asymmetry(left_shoulder, right_shoulder):
     return abs(
         left_shoulder[1] - right_shoulder[1]
     )
+
+def calculate_body_alignment(shoulder, hip, ankle):
+    return calculate_angle(
+        shoulder,
+        hip,
+        ankle
+    )
