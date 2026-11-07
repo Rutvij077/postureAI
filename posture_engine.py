@@ -319,3 +319,23 @@ def calculate_body_alignment(shoulder, hip, ankle):
         hip,
         ankle
     )
+
+def calculate_hip_deviation(shoulder, hip, ankle):
+
+    start = np.array(shoulder, dtype=float)
+    point = np.array(hip, dtype=float)
+    end = np.array(ankle, dtype=float)
+
+    line = end - start
+
+    line_length = np.linalg.norm(line)
+
+    if line_length < 1e-6:
+        return None
+
+    deviation = (
+        line[0] * (point[1] - start[1])
+        - line[1] * (point[0] - start[0])
+    )
+
+    return float(deviation / line_length)
