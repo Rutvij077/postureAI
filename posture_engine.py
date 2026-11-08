@@ -189,14 +189,64 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("hip_alignment")
 
+        # Knee angle
+    if "knee_angle" in config["measurements"]:
+
+        hip = points["left_hip"]
+        knee = points["left_knee"]
+        ankle = points["left_ankle"]
+
+        if (
+            hip is not None
+            and knee is not None
+            and ankle is not None
+        ):
+
+            measurements["knee_angle_degrees"] = (
+                calculate_knee_angle(
+                    hip,
+                    knee,
+                    ankle
+                )
+            )
+
+        else:
+            missing_measurements.append("knee_angle")
+
+    # Hip depth
+    if "hip_depth" in config["measurements"]:
+
+        hip = points["left_hip"]
+        knee = points["left_knee"]
+        ankle = points["left_ankle"]
+
+        if (
+            hip is not None
+            and knee is not None
+            and ankle is not None
+        ):
+
+            measurements["hip_depth_ratio"] = (
+                calculate_hip_depth(
+                    hip,
+                    knee,
+                    ankle
+                )
+            )
+
+        else:
+            missing_measurements.append("hip_depth")
+
     # Identify measurements not implemented yet
-        implemented = {
+    implemented = {
         "head_alignment",
         "torso_inclination",
         "elbow_angle",
         "shoulder_symmetry",
         "body_alignment",
-        "hip_alignment"
+        "hip_alignment",
+        "knee_angle",
+        "hip_depth"
     }
 
     for measurement in config["measurements"]:
