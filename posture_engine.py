@@ -396,3 +396,18 @@ def calculate_knee_angle(hip, knee, ankle):
         knee,
         ankle
     )
+
+def calculate_hip_depth(hip, knee, ankle):
+
+    hip = np.array(hip, dtype=float)
+    knee = np.array(knee, dtype=float)
+    ankle = np.array(ankle, dtype=float)
+
+    thigh_length = np.linalg.norm(hip - knee)
+
+    if thigh_length < 1e-6:
+        return None
+
+    vertical_difference = hip[1] - knee[1]
+
+    return float(vertical_difference / thigh_length)
