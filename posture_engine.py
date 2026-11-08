@@ -389,3 +389,10 @@ def calculate_hip_deviation(shoulder, hip, ankle):
     )
 
     return float(deviation / line_length)
+
+def calculate_knee_angle(hip, knee, ankle):
+    return calculate_angle(
+        hip,
+        knee,
+        ankle
+    )
