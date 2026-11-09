@@ -213,6 +213,30 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("knee_angle")
 
+        # Hip hinge
+    if "hip_hinge" in config["measurements"]:
+
+        shoulder = points["left_shoulder"]
+        hip = points["left_hip"]
+        knee = points["left_knee"]
+
+        if (
+            shoulder is not None
+            and hip is not None
+            and knee is not None
+        ):
+
+            measurements["hip_hinge_degrees"] = (
+                calculate_hip_hinge(
+                    shoulder,
+                    hip,
+                    knee
+                )
+            )
+
+        else:
+            missing_measurements.append("hip_hinge")
+
     # Hip depth
     if "hip_depth" in config["measurements"]:
 
@@ -246,7 +270,8 @@ def analyze_exercise_measurements(
         "body_alignment",
         "hip_alignment",
         "knee_angle",
-        "hip_depth"
+        "hip_depth",
+        "hip_hinge"
     }
 
     for measurement in config["measurements"]:
@@ -461,3 +486,11 @@ def calculate_hip_depth(hip, knee, ankle):
     vertical_difference = hip[1] - knee[1]
 
     return float(vertical_difference / thigh_length)
+
+def calculate_hip_hinge(shoulder, hip, knee):
+
+    return calculate_angle(
+        shoulder,
+        hip,
+        knee
+    )
