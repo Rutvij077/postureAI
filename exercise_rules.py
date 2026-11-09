@@ -5,7 +5,7 @@ EXERCISES = {
         "measurements": [
             "head_alignment",
             "torso_inclination",
-            "hip_depth"
+            "hip_depth",
             "knee_angle"
         ],
         "landmarks": [
@@ -23,7 +23,8 @@ EXERCISES = {
         "measurements": [
             "head_alignment",
             "torso_inclination",
-            "hip_position"
+            "hip_position",
+            "hip_hinge"
         ],
         "landmarks": [
             "ear",
