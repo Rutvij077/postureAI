@@ -88,7 +88,11 @@ def analyze_exercise_measurements(
             missing_measurements.append("head_alignment")
 
     # Torso inclination
-    if "torso_inclination" in config["measurements"]:
+    # Also calculate it internally when torso_stability is required.
+    if (
+        "torso_inclination" in config["measurements"]
+        or "torso_stability" in config["measurements"]
+    ):
 
         shoulder = points["left_shoulder"]
         hip = points["left_hip"]
@@ -99,8 +103,19 @@ def analyze_exercise_measurements(
                 calculate_torso_inclination(shoulder, hip)
             )
 
+            if measurements["torso_angle_degrees"] is None:
+                if "torso_inclination" in config["measurements"]:
+                    missing_measurements.append("torso_inclination")
+
+                if "torso_stability" in config["measurements"]:
+                    missing_measurements.append("torso_stability")
+
         else:
-            missing_measurements.append("torso_inclination")
+            if "torso_inclination" in config["measurements"]:
+                missing_measurements.append("torso_inclination")
+
+            if "torso_stability" in config["measurements"]:
+                missing_measurements.append("torso_stability")
 
     # Elbow angle
     if "elbow_angle" in config["measurements"]:
@@ -265,6 +280,7 @@ def analyze_exercise_measurements(
     implemented = {
         "head_alignment",
         "torso_inclination",
+        "torso_stability",
         "elbow_angle",
         "shoulder_symmetry",
         "body_alignment",
