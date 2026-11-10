@@ -311,6 +311,95 @@ def analyze_exercise_measurements(
         "unsupported_measurements": unsupported_measurements
     }
 
+class ExerciseAnalyzer:
+
+    def __init__(self, stability_window=30):
+
+        from measurement_smoothing import TorsoStabilityTracker
+
+        self.stability_tracker = TorsoStabilityTracker(
+            window_size=stability_window
+        )
+
+        self.current_exercise = None
+
+    def reset(self):
+
+        self.stability_tracker.reset()
+        self.current_exercise = None
+
+    def analyze_frame(
+        self,
+        landmarks,
+        exercise,
+        image_width,
+        image_height
+    ):
+
+        # Reset history when the selected exercise changes
+        if exercise != self.current_exercise:
+
+            self.stability_tracker.reset()
+            self.current_exercise = exercise
+
+        result = analyze_exercise_measurements(
+            landmarks,
+            exercise,
+            image_width,
+            image_height
+        )
+
+        from exercise_rules import EXERCISES
+
+        config = EXERCISES[exercise]
+
+        if "torso_stability" in config["measurements"]:
+
+            torso_angle = result["measurements"].get(
+                "torso_angle_degrees"
+            )
+
+            if torso_angle is None:
+
+                self.stability_tracker.reset()
+                variation = None
+
+            else:
+
+                variation = self.stability_tracker.update(
+                    torso_angle
+                )
+
+            result["measurements"]["torso_variation_degrees"] = variation
+
+            # Stability needs at least two valid frames
+            if variation is None:
+                if "torso_stability" not in result["missing_measurements"]:
+                    result["missing_measurements"].append(
+                        "torso_stability"
+                    )
+
+            else:
+                if "torso_stability" in result["missing_measurements"]:
+                    result["missing_measurements"].remove(
+                        "torso_stability"
+                    )
+
+        # Recalculate status after temporal analysis
+        if (
+            result["missing_measurements"]
+            or result["unsupported_measurements"]
+        ):
+            result["status"] = "partial"
+
+        elif result["measurements"]:
+            result["status"] = "measurements_available"
+
+        else:
+            result["status"] = "no_measurements_available"
+
+        return result
+
 def calculate_angle(a, b, c):
     """Calculate angle ABC in degrees."""
 
