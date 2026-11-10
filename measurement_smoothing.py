@@ -1,4 +1,5 @@
 from collections import deque
+import numpy as np
 
 
 class MeasurementSmoother:
@@ -48,4 +49,25 @@ class MeasurementSmoother:
 
         return measurements
 
-    
+class TorsoStabilityTracker:
+
+    def __init__(self, window_size=30):
+        self.torso_angles = deque(maxlen=window_size)
+
+    def update(self, torso_angle):
+
+        if torso_angle is None:
+            return None
+
+        self.torso_angles.append(torso_angle)
+
+        # Need at least two measurements
+        if len(self.torso_angles) < 2:
+            return None
+
+        variation = np.std(self.torso_angles)
+
+        return round(float(variation), 2)
+
+    def reset(self):
+        self.torso_angles.clear()
