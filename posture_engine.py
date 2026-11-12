@@ -313,12 +313,20 @@ def analyze_exercise_measurements(
 
 class ExerciseAnalyzer:
 
-    def __init__(self, stability_window=30):
 
-        from measurement_smoothing import TorsoStabilityTracker
+    def __init__(self, stability_window=30, smoothing_window=5):
+
+        from measurement_smoothing import (
+            TorsoStabilityTracker,
+            MeasurementSmoother
+        )
 
         self.stability_tracker = TorsoStabilityTracker(
             window_size=stability_window
+        )
+
+        self.smoother = MeasurementSmoother(
+            window_size=smoothing_window
         )
 
         self.current_exercise = None
@@ -326,6 +334,7 @@ class ExerciseAnalyzer:
     def reset(self):
 
         self.stability_tracker.reset()
+        self.smoother.reset()
         self.current_exercise = None
 
     def analyze_frame(
@@ -398,7 +407,7 @@ class ExerciseAnalyzer:
         else:
             result["status"] = "no_measurements_available"
 
-        return result
+        return self.smoother.smooth(result)
 
 def calculate_angle(a, b, c):
     """Calculate angle ABC in degrees."""
