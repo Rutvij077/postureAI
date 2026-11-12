@@ -1,3 +1,4 @@
+
 from collections import deque
 import numpy as np
 
@@ -5,49 +6,46 @@ import numpy as np
 class MeasurementSmoother:
 
     def __init__(self, window_size=5):
+
         self.window_size = window_size
 
-        self.head_offsets = deque(maxlen=window_size)
-        self.torso_angles = deque(maxlen=window_size)
+        # Each measurement gets its own rolling history
+        self.history = {}
 
     def reset(self):
-        self.head_offsets.clear()
-        self.torso_angles.clear()
+        self.history.clear()
 
-    def smooth(self, measurements):
+    def smooth(self, result):
 
-        # Reset history if measurements are unreliable
-        if measurements["status"] != "measurements_available":
-            self.reset()
-            return measurements
+        smoothed_result = result.copy()
+        measurements = result.get("measurements", {}).copy()
 
-        self.head_offsets.append(measurements["head_offset"])
+        for key, value in measurements.items():
 
-        if measurements["torso_angle_degrees"] is not None:
-            self.torso_angles.append(
-                measurements["torso_angle_degrees"]
-            )
+            # Smooth only numeric measurements
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
 
-        smoothed_head = (
-            sum(self.head_offsets) / len(self.head_offsets)
-        )
+                if key not in self.history:
+                    self.history[key] = deque(
+                        maxlen=self.window_size
+                    )
 
-        smoothed_torso = None
+                self.history[key].append(value)
 
-        if self.torso_angles:
-            smoothed_torso = (
-                sum(self.torso_angles) / len(self.torso_angles)
-            )
+                measurements[key] = round(
+                    sum(self.history[key]) / len(self.history[key]),
+                    3
+                )
 
-        measurements["head_offset"] = round(smoothed_head, 3)
+            else:
+                # Clear history when a measurement becomes unavailable
+                if key in self.history:
+                    self.history[key].clear()
 
-        measurements["torso_angle_degrees"] = (
-            round(smoothed_torso, 1)
-            if smoothed_torso is not None
-            else None
-        )
+        smoothed_result["measurements"] = measurements
 
-        return measurements
+        return smoothed_result
+
 
 class TorsoStabilityTracker:
 
