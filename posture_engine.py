@@ -141,6 +141,41 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("elbow_angle")
 
+    
+    # Arm alignment
+    if "arm_alignment" in config["measurements"]:
+
+        left_shoulder = points["left_shoulder"]
+        left_elbow = points["left_elbow"]
+
+        right_shoulder = points["right_shoulder"]
+        right_elbow = points["right_elbow"]
+
+        if left_shoulder is not None and left_elbow is not None:
+
+            measurements["left_arm_alignment_degrees"] = (
+                calculate_arm_alignment(
+                    left_shoulder,
+                    left_elbow
+                )
+            )
+
+        if right_shoulder is not None and right_elbow is not None:
+
+            measurements["right_arm_alignment_degrees"] = (
+                calculate_arm_alignment(
+                    right_shoulder,
+                    right_elbow
+                )
+            )
+
+        if (
+            "left_arm_alignment_degrees" not in measurements
+            or "right_arm_alignment_degrees" not in measurements
+        ):
+            missing_measurements.append("arm_alignment")
+
+
     # Shoulder symmetry
     if "shoulder_symmetry" in config["measurements"]:
 
@@ -287,7 +322,8 @@ def analyze_exercise_measurements(
         "hip_alignment",
         "knee_angle",
         "hip_depth",
-        "hip_hinge"
+        "hip_hinge",
+        "arm_alignment"
     }
 
     for measurement in config["measurements"]:
