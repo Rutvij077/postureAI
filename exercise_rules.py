@@ -173,3 +173,30 @@ EXERCISES = {
         ]
     }
 }
+
+
+EXERCISE_CATEGORIES = {
+    "gym": {
+        "name": "Gym Workouts",
+        "description": "Exercises using gym equipment, machines, dumbbells or barbells.",
+        "exercises": [
+            "squat",
+            "deadlift",
+            "romanian_deadlift",
+            "bent_over_row",
+            "bicep_curl",
+            "lat_pulldown",
+            "shoulder_press"
+        ]
+    },
+
+    "home": {
+        "name": "Home Workouts",
+        "description": "Bodyweight exercises that can be performed without gym equipment.",
+        "exercises": [
+            "push_up",
+            "plank",
+            "forward_lunge"
+        ]
+    }
+}
