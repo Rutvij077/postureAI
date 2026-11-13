@@ -608,3 +608,27 @@ def calculate_hip_hinge(shoulder, hip, knee):
         hip,
         knee
     )
+
+
+def calculate_arm_alignment(shoulder, elbow):
+
+    if shoulder is None or elbow is None:
+        return None
+
+    shoulder = np.array(shoulder)
+    elbow = np.array(elbow)
+
+    arm_vector = elbow - shoulder
+
+    # Compare the upper arm against the vertical axis
+    horizontal_distance = abs(arm_vector[0])
+    vertical_distance = abs(arm_vector[1])
+
+    if np.linalg.norm(arm_vector) < 1e-6:
+        return None
+
+    angle = np.degrees(
+        np.arctan2(horizontal_distance, vertical_distance)
+    )
+
+    return round(float(angle), 2)
