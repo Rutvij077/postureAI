@@ -171,8 +171,7 @@ EXERCISES = {
             "knee",
             "ankle"
         ]
-    }
-
+    },
 
     "bodyweight_squat": {
         "name": "Bodyweight Squat",
@@ -229,6 +228,7 @@ EXERCISES = {
 }
 
 
+
 EXERCISE_CATEGORIES = {
     "gym": {
         "name": "Gym Workouts",
@@ -250,7 +250,11 @@ EXERCISE_CATEGORIES = {
         "exercises": [
             "push_up",
             "plank",
-            "forward_lunge"
+            "forward_lunge",
+            "bodyweight_squat",
+            "tricep_dips",
+            "wall_sit"
         ]
     }
 }
+
