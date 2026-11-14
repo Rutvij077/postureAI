@@ -311,6 +311,29 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("hip_depth")
 
+    
+    # Front-view torso alignment
+    if "torso_alignment" in config["measurements"]:
+
+        left_shoulder = points["left_shoulder"]
+        right_shoulder = points["right_shoulder"]
+
+        left_hip = points["left_hip"]
+        right_hip = points["right_hip"]
+
+        alignment = calculate_torso_alignment(
+            left_shoulder,
+            right_shoulder,
+            left_hip,
+            right_hip
+        )
+
+        if alignment is not None:
+            measurements["torso_alignment_degrees"] = alignment
+        else:
+            missing_measurements.append("torso_alignment")
+
+
     # Identify measurements not implemented yet
     implemented = {
         "head_alignment",
@@ -323,7 +346,8 @@ def analyze_exercise_measurements(
         "knee_angle",
         "hip_depth",
         "hip_hinge",
-        "arm_alignment"
+        "arm_alignment",
+        "torso_alignment"
     }
 
     for measurement in config["measurements"]:
@@ -668,3 +692,41 @@ def calculate_arm_alignment(shoulder, elbow):
     )
 
     return round(float(angle), 2)
+
+
+def calculate_torso_alignment(
+    left_shoulder,
+    right_shoulder,
+    left_hip,
+    right_hip
+):
+
+    if any(
+        point is None
+        for point in [
+            left_shoulder,
+            right_shoulder,
+            left_hip,
+            right_hip
+        ]
+    ):
+        return None
+
+    # Calculate the midpoint between both shoulders
+    shoulder_midpoint = (
+        np.array(left_shoulder) + np.array(right_shoulder)
+    ) / 2
+
+    # Calculate the midpoint between both hips
+    hip_midpoint = (
+        np.array(left_hip) + np.array(right_hip)
+    ) / 2
+
+    # Calculate torso inclination using the centre line
+    angle = calculate_torso_inclination(
+        shoulder_midpoint,
+        hip_midpoint
+    )
+
+    return round(float(angle), 2) if angle is not None else None
+
