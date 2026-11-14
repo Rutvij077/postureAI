@@ -172,6 +172,60 @@ EXERCISES = {
             "ankle"
         ]
     }
+
+
+    "bodyweight_squat": {
+        "name": "Bodyweight Squat",
+        "view": "side",
+        "measurements": [
+            "head_alignment",
+            "torso_inclination",
+            "hip_depth",
+            "knee_angle"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "knee",
+            "ankle"
+        ]
+    },
+
+    "tricep_dips": {
+        "name": "Tricep Dips",
+        "view": "side",
+        "measurements": [
+            "head_alignment",
+            "elbow_angle",
+            "torso_inclination"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "elbow",
+            "wrist",
+            "hip"
+        ]
+    },
+
+    "wall_sit": {
+        "name": "Wall Sit",
+        "view": "side",
+        "measurements": [
+            "head_alignment",
+            "torso_inclination",
+            "knee_angle"
+        ],
+        "landmarks": [
+            "ear",
+            "shoulder",
+            "hip",
+            "knee",
+            "ankle"
+        ]
+    },
+
 }
 
 
