@@ -158,6 +158,18 @@ def generate_feedback(result):
                 f"{shoulder_asymmetry} pixels."
             )
 
+        # Additional lat pulldown feedback
+        if exercise == "lat_pulldown":
+
+            torso_alignment = measurements.get(
+                "torso_alignment_degrees"
+            )
+
+            if torso_alignment is not None:
+                feedback.append(
+                    f"Estimated front-view torso alignment: "
+                    f"{torso_alignment} degrees."
+                )
     # Report unavailable measurements
     if missing:
         feedback.append(
