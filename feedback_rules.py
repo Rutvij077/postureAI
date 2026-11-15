@@ -78,6 +78,14 @@ def generate_feedback(result):
                 f"Estimated hip-hinge angle: {hip_hinge} degrees."
             )
 
+    if exercise == "deadlift":
+        hip_position = measurements.get("hip_position_ratio")
+
+        if hip_position is not None:
+            feedback.append(
+                f"Normalized horizontal hip position: {hip_position}."
+            )
+
     # Bicep curl
     if exercise == "bicep_curl":
 
