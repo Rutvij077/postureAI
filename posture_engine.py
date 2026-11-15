@@ -730,3 +730,24 @@ def calculate_torso_alignment(
 
     return round(float(angle), 2) if angle is not None else None
 
+
+def calculate_hip_position(hip, ankle):
+
+    if hip is None or ankle is None:
+        return None
+
+    hip = np.array(hip)
+    ankle = np.array(ankle)
+
+    leg_length = np.linalg.norm(hip - ankle)
+
+    if leg_length < 1e-6:
+        return None
+
+    horizontal_offset = hip[0] - ankle[0]
+
+    hip_position = horizontal_offset / leg_length
+
+    return round(float(hip_position), 3)
+
+
