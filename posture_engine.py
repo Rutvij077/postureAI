@@ -287,6 +287,26 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("hip_hinge")
 
+    
+    # Hip position
+    if "hip_position" in config["measurements"]:
+
+        hip = points["left_hip"]
+        ankle = points["left_ankle"]
+
+        if hip is not None and ankle is not None:
+
+            measurements["hip_position_ratio"] = (
+                calculate_hip_position(
+                    hip,
+                    ankle
+                )
+            )
+
+        else:
+            missing_measurements.append("hip_position")
+
+
     # Hip depth
     if "hip_depth" in config["measurements"]:
 
@@ -346,6 +366,7 @@ def analyze_exercise_measurements(
         "knee_angle",
         "hip_depth",
         "hip_hinge",
+        "hip_position",
         "arm_alignment",
         "torso_alignment"
     }
