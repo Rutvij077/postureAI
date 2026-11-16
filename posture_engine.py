@@ -191,7 +191,7 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("shoulder_symmetry")
 
-        # Body alignment
+    # Body alignment
     if "body_alignment" in config["measurements"]:
 
         shoulder = points["left_shoulder"]
@@ -239,7 +239,7 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("hip_alignment")
 
-        # Knee angle
+    # Knee angle
     if "knee_angle" in config["measurements"]:
 
         hip = points["left_hip"]
@@ -263,7 +263,7 @@ def analyze_exercise_measurements(
         else:
             missing_measurements.append("knee_angle")
 
-        # Hip hinge
+    # Hip hinge
     if "hip_hinge" in config["measurements"]:
 
         shoulder = points["left_shoulder"]
@@ -399,7 +399,8 @@ class ExerciseAnalyzer:
 
         from measurement_smoothing import (
             TorsoStabilityTracker,
-            MeasurementSmoother
+            MeasurementSmoother,
+            HoldDurationTracker
         )
 
         self.stability_tracker = TorsoStabilityTracker(
@@ -410,12 +411,15 @@ class ExerciseAnalyzer:
             window_size=smoothing_window
         )
 
+        self.hold_tracker = HoldDurationTracker()
+
         self.current_exercise = None
 
     def reset(self):
 
         self.stability_tracker.reset()
         self.smoother.reset()
+        self.hold_tracker.reset()
         self.current_exercise = None
 
     def analyze_frame(
@@ -474,6 +478,32 @@ class ExerciseAnalyzer:
                     result["missing_measurements"].remove(
                         "torso_stability"
                     )
+
+        # Static hold tracking for Plank and Wall Sit
+        if exercise in ["plank", "wall_sit"]:
+
+            required_measurements = {
+                "plank": ["body_alignment_degrees"],
+                "wall_sit": ["knee_angle_degrees"]
+            }
+
+            required = required_measurements[exercise]
+
+            posture_detected = all(
+                result["measurements"].get(key) is not None
+                for key in required
+            )
+
+            hold_duration = self.hold_tracker.update(
+                posture_detected
+            )
+
+            result["measurements"]["hold_duration_seconds"] = (
+                hold_duration
+            )
+
+        else:
+            self.hold_tracker.reset()
 
         # Recalculate status after temporal analysis
         if (
