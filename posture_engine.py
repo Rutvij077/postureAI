@@ -392,6 +392,32 @@ def analyze_exercise_measurements(
         "unsupported_measurements": unsupported_measurements
     }
 
+def is_valid_static_hold(exercise, measurements):
+
+    if exercise == "plank":
+
+        body_angle = measurements.get(
+            "body_alignment_degrees"
+        )
+
+        return (
+            body_angle is not None
+            and 165 <= body_angle <= 195
+        )
+
+    if exercise == "wall_sit":
+
+        knee_angle = measurements.get(
+            "knee_angle_degrees"
+        )
+
+        return (
+            knee_angle is not None
+            and 80 <= knee_angle <= 100
+        )
+
+    return False
+
 class ExerciseAnalyzer:
 
 
@@ -489,9 +515,15 @@ class ExerciseAnalyzer:
 
             required = required_measurements[exercise]
 
-            posture_detected = all(
-                result["measurements"].get(key) is not None
-                for key in required
+            posture_detected = (
+                all(
+                    result["measurements"].get(key) is not None
+                    for key in required
+                )
+                and is_valid_static_hold(
+                    exercise,
+                    result["measurements"]
+                )
             )
 
             hold_duration = self.hold_tracker.update(
