@@ -1,7 +1,7 @@
 
 from collections import deque
 import numpy as np
-
+import time
 
 class MeasurementSmoother:
 
@@ -69,3 +69,29 @@ class TorsoStabilityTracker:
 
     def reset(self):
         self.torso_angles.clear()
+
+
+class HoldDurationTracker:
+
+    def __init__(self):
+        self.start_time = None
+        self.elapsed_time = 0
+
+    def update(self, posture_detected):
+
+        if posture_detected:
+
+            if self.start_time is None:
+                self.start_time = time.time()
+
+            self.elapsed_time = time.time() - self.start_time
+
+        else:
+            self.reset()
+
+        return round(self.elapsed_time, 2)
+
+    def reset(self):
+        self.start_time = None
+        self.elapsed_time = 0
+
