@@ -460,6 +460,7 @@ class ExerciseAnalyzer:
         if exercise != self.current_exercise:
 
             self.stability_tracker.reset()
+            self.hold_tracker.reset()
             self.current_exercise = exercise
 
         result = analyze_exercise_measurements(
