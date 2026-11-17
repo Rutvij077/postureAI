@@ -526,6 +526,10 @@ class ExerciseAnalyzer:
                 )
             )
 
+            result["measurements"]["hold_posture_valid"] = (
+                posture_detected
+            )
+
             hold_duration = self.hold_tracker.update(
                 posture_detected
             )

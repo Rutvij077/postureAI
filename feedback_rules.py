@@ -178,6 +178,30 @@ def generate_feedback(result):
                     f"Estimated front-view torso alignment: "
                     f"{torso_alignment} degrees."
                 )
+
+    # Static hold feedback
+    if exercise in ["plank", "wall_sit"]:
+
+        hold_valid = measurements.get(
+            "hold_posture_valid"
+        )
+
+        hold_duration = measurements.get(
+            "hold_duration_seconds"
+        )
+
+        if hold_valid is True:
+            feedback.append(
+                f"Hold position maintained for "
+                f"{hold_duration} seconds."
+            )
+
+        elif hold_valid is False:
+            feedback.append(
+                "Your hold position is outside the initial "
+                "target range. Adjust your posture."
+            )
+            
     # Report unavailable measurements
     if missing:
         feedback.append(
