@@ -73,25 +73,43 @@ class TorsoStabilityTracker:
 
 class HoldDurationTracker:
 
-    def __init__(self):
+    def __init__(self, grace_period=0.3):
+
+        self.grace_period = grace_period
         self.start_time = None
+        self.last_valid_time = None
         self.elapsed_time = 0
 
     def update(self, posture_detected):
 
+        current_time = time.monotonic()
+
         if posture_detected:
 
             if self.start_time is None:
-                self.start_time = time.time()
+                self.start_time = current_time
 
-            self.elapsed_time = time.time() - self.start_time
+            self.last_valid_time = current_time
 
-        else:
-            self.reset()
+        elif self.start_time is not None:
+
+            time_since_valid = (
+                current_time - self.last_valid_time
+            )
+
+            if time_since_valid > self.grace_period:
+                self.reset()
+
+        if self.start_time is not None:
+            self.elapsed_time = (
+                current_time - self.start_time
+            )
 
         return round(self.elapsed_time, 2)
 
     def reset(self):
+
         self.start_time = None
+        self.last_valid_time = None
         self.elapsed_time = 0
 
