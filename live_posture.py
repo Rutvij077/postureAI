@@ -72,6 +72,79 @@ try:
             # Generate feedback from analysis result
             feedback = generate_feedback(result)
 
+            # Display static hold progress
+        if exercise in ["plank", "wall_sit"]:
+
+            measurements = result.get("measurements", {})
+
+            duration = measurements.get(
+                "hold_duration_seconds", 0
+            )
+
+            target = measurements.get(
+                "hold_target_seconds", 30
+            )
+
+            completed = measurements.get(
+                "hold_completed", False
+            )
+
+            progress = min(
+                duration / target,
+                1.0
+            ) if target > 0 else 0
+
+            progress_percent = int(progress * 100)
+
+            # Progress information
+            cv2.putText(
+                frame,
+                f"Hold: {duration:.1f} / {target} sec",
+                (10, height - 85),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.65,
+                (255, 255, 255),
+                2
+            )
+
+            # Progress bar background
+            bar_x = 10
+            bar_y = height - 65
+            bar_width = 250
+            bar_height = 15
+
+            cv2.rectangle(
+                frame,
+                (bar_x, bar_y),
+                (bar_x + bar_width, bar_y + bar_height),
+                (100, 100, 100),
+                -1
+            )
+
+            # Filled progress bar
+            cv2.rectangle(
+                frame,
+                (bar_x, bar_y),
+                (
+                    bar_x + int(bar_width * progress),
+                    bar_y + bar_height
+                ),
+                (0, 255, 0),
+                -1
+            )
+
+            status = "TARGET COMPLETED" if completed else "IN PROGRESS"
+
+            cv2.putText(
+                frame,
+                f"{status} - {progress_percent}%",
+                (10, height - 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0, 255, 0),
+                2
+            )
+
             # Display feedback
             y_position = 30
 
@@ -111,7 +184,7 @@ try:
         cv2.putText(
             frame,
             f"Exercise: {exercise}",
-            (10, height - 20),
+            (280, height - 55),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.7,
             (255, 255, 0),
