@@ -539,6 +539,19 @@ class ExerciseAnalyzer:
                 hold_duration
             )
 
+            from exercise_rules import HOLD_TARGETS
+
+            hold_target = HOLD_TARGETS[exercise]
+
+            result["measurements"]["hold_target_seconds"] = (
+                hold_target
+            )
+
+            result["measurements"]["hold_completed"] = (
+                posture_detected
+                and hold_duration >= hold_target
+            )
+
         else:
             self.hold_tracker.reset()
 

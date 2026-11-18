@@ -257,4 +257,7 @@ EXERCISE_CATEGORIES = {
         ]
     }
 }
-
+HOLD_TARGETS = {
+    "plank": 30,
+    "wall_sit": 30
+}

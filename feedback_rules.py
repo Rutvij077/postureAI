@@ -182,15 +182,17 @@ def generate_feedback(result):
     # Static hold feedback
     if exercise in ["plank", "wall_sit"]:
 
-        hold_valid = measurements.get(
-            "hold_posture_valid"
-        )
+        hold_valid = measurements.get("hold_posture_valid")
+        hold_duration = measurements.get("hold_duration_seconds")
+        hold_completed = measurements.get("hold_completed", False)
 
-        hold_duration = measurements.get(
-            "hold_duration_seconds"
-        )
+        if hold_completed:
+            feedback.append(
+                f"Target achieved! You maintained the hold "
+                f"for {hold_duration} seconds."
+            )
 
-        if hold_valid is True:
+        elif hold_valid is True:
             feedback.append(
                 f"Hold position maintained for "
                 f"{hold_duration} seconds."
