@@ -535,6 +535,10 @@ class ExerciseAnalyzer:
                 posture_detected
             )
 
+            result["measurements"]["hold_status"] = (
+                self.hold_tracker.status
+            )
+            
             result["measurements"]["hold_duration_seconds"] = (
                 hold_duration
             )

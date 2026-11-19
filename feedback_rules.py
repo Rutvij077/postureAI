@@ -179,12 +179,21 @@ def generate_feedback(result):
                     f"{torso_alignment} degrees."
                 )
 
+    
     # Static hold feedback
     if exercise in ["plank", "wall_sit"]:
 
-        hold_valid = measurements.get("hold_posture_valid")
-        hold_duration = measurements.get("hold_duration_seconds")
-        hold_completed = measurements.get("hold_completed", False)
+        hold_status = measurements.get(
+            "hold_status", "INVALID"
+        )
+
+        hold_duration = measurements.get(
+            "hold_duration_seconds", 0
+        )
+
+        hold_completed = measurements.get(
+            "hold_completed", False
+        )
 
         if hold_completed:
             feedback.append(
@@ -192,17 +201,24 @@ def generate_feedback(result):
                 f"for {hold_duration} seconds."
             )
 
-        elif hold_valid is True:
+        elif hold_status == "VALID":
             feedback.append(
                 f"Hold position maintained for "
                 f"{hold_duration} seconds."
             )
 
-        elif hold_valid is False:
+        elif hold_status == "TEMPORARY LOSS":
+            feedback.append(
+                "Posture detection temporarily lost. "
+                "Hold steady."
+            )
+
+        else:
             feedback.append(
                 "Your hold position is outside the initial "
                 "target range. Adjust your posture."
             )
+
             
     # Report unavailable measurements
     if missing:

@@ -23,7 +23,14 @@ class MeasurementSmoother:
         for key, value in measurements.items():
 
             # Smooth only numeric measurements
-            if isinstance(value, (int, float)) and not isinstance(value, bool):
+            if (
+                isinstance(value, (int, float))
+                and not isinstance(value, bool)
+                and key not in [
+                    "hold_duration_seconds",
+                    "hold_target_seconds"
+                ]
+            ):
 
                 if key not in self.history:
                     self.history[key] = deque(
