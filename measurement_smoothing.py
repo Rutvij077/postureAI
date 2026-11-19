@@ -71,6 +71,7 @@ class TorsoStabilityTracker:
         self.torso_angles.clear()
 
 
+
 class HoldDurationTracker:
 
     def __init__(self, grace_period=0.3):
@@ -79,6 +80,7 @@ class HoldDurationTracker:
         self.start_time = None
         self.last_valid_time = None
         self.elapsed_time = 0
+        self.status = "INVALID"
 
     def update(self, posture_detected):
 
@@ -90,6 +92,7 @@ class HoldDurationTracker:
                 self.start_time = current_time
 
             self.last_valid_time = current_time
+            self.status = "VALID"
 
         elif self.start_time is not None:
 
@@ -97,8 +100,14 @@ class HoldDurationTracker:
                 current_time - self.last_valid_time
             )
 
-            if time_since_valid > self.grace_period:
+            if time_since_valid <= self.grace_period:
+                self.status = "TEMPORARY LOSS"
+
+            else:
                 self.reset()
+
+        else:
+            self.status = "INVALID"
 
         if self.start_time is not None:
             self.elapsed_time = (
@@ -112,4 +121,4 @@ class HoldDurationTracker:
         self.start_time = None
         self.last_valid_time = None
         self.elapsed_time = 0
-
+        self.status = "INVALID"
