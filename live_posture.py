@@ -72,7 +72,7 @@ try:
             # Generate feedback from analysis result
             feedback = generate_feedback(result)
 
-            # Display static hold progress
+        # Display static hold progress
         if exercise in ["plank", "wall_sit"]:
 
             measurements = result.get("measurements", {})
@@ -87,6 +87,21 @@ try:
 
             completed = measurements.get(
                 "hold_completed", False
+            )
+
+            hold_status = measurements.get(
+                "hold_status", "INVALID"
+            )
+
+            status_colors = {
+                "VALID": (0, 255, 0),
+                "TEMPORARY LOSS": (0, 255, 255),
+                "INVALID": (0, 0, 255)
+            }
+
+            status_color = status_colors.get(
+                hold_status,
+                (0, 0, 255)
             )
 
             progress = min(
@@ -104,6 +119,16 @@ try:
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.65,
                 (255, 255, 255),
+                2
+            )
+
+            cv2.putText(
+                frame,
+                f"Posture: {hold_status}",
+                (280, height - 85),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.65,
+                status_color,
                 2
             )
 
@@ -133,7 +158,14 @@ try:
                 -1
             )
 
-            status = "TARGET COMPLETED" if completed else "IN PROGRESS"
+            if completed:
+                status = "TARGET COMPLETED"
+            elif hold_status == "VALID":
+                status = "HOLDING"
+            elif hold_status == "TEMPORARY LOSS":
+                status = "DETECTION LOST"
+            else:
+                status = "ADJUST POSTURE"
 
             cv2.putText(
                 frame,
