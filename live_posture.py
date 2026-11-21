@@ -198,19 +198,47 @@ try:
                     break
 
         else:
+            if exercise in ["plank", "wall_sit"]:
+                # Preserve the hold timer during brief pose detection loss
+                hold_duration = analyzer.hold_tracker.update(False)
+                hold_status = analyzer.hold_tracker.status
 
-            # Clear temporal history after losing pose
-            analyzer.reset()
+                # Clear old measurement history
+                analyzer.smoother.reset()
+                analyzer.stability_tracker.reset()
 
-            cv2.putText(
-                frame,
-                "No pose detected",
-                (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.7,
-                (0, 0, 255),
-                2
-            )
+                status_color = (
+                    (0, 255, 0) if hold_status == "VALID"
+                    else (0, 255, 255) if hold_status == "TEMPORARY LOSS"
+                    else (0, 0, 255)
+                )
+
+                cv2.putText(
+                    frame, "No pose detected",
+                    (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7, (0, 0, 255), 2
+                )
+
+                cv2.putText(
+                    frame, f"Posture: {hold_status}",
+                    (10, 60), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7, status_color, 2
+                )
+
+                cv2.putText(
+                    frame, f"Hold: {hold_duration:.1f} sec",
+                    (10, 90), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7, (255, 255, 255), 2
+                )
+
+            else:
+                analyzer.reset()
+
+                cv2.putText(
+                    frame, "No pose detected",
+                    (10, 30), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7, (0, 0, 255), 2
+                )
 
         # Display selected exercise
         cv2.putText(
